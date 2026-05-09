@@ -1,98 +1,174 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { Linking, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
+const SignInPage = () => {
+  const [mailAddress, setMailAddress] = useState('');
+  const [password, setPassword] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [focusedInput, setFocusedInput] = useState('');
+
+  const handleSignIn = () => {
+    console.log(`mail address: ${mailAddress}, password: ${password}`);
   }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
+    <SafeAreaView style={{ flex: 1 }}>
+      <View
+        style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center', padding: 15 }}>
+        <Ionicons name="home" size={45} color="#85CC17" />
+
+        <View style={{ marginTop: 20, marginBottom: 24, alignItems: 'center' }}>
+          <Text style={{ fontSize: 30, fontWeight: 'bold', marginBottom: 7 }}>Sign In</Text>
+          <Text style={{ fontSize: 16 }}>Experience the joy of telecare AI</Text>
+        </View>
+
+        {/* sing in form */}
+        <View style={{ alignItems: 'flex-start', width: "100%" }}>
+
+          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 2 }}>Email Address</Text>
+          <View style={[styles.inputWrapper, focusedInput === 'email' && styles.focusedInputWrapper]}>
+            <Ionicons name="mail-unread-outline" size={22} color="black" style={styles.inputIcon} />
+            <TextInput
+              placeholder="joE0O@example.com"
+              value={mailAddress}
+              onChangeText={setMailAddress}
+              onFocus={() => setFocusedInput('email')}
+              onBlur={() => setFocusedInput('')}
+              placeholderTextColor="black"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              style={styles.input}
+            />
+          </View>
+
+          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 2 }}>Password</Text>
+          <View style={[styles.inputWrapper, focusedInput === 'password' && styles.focusedInputWrapper]}>
+            <Ionicons name="lock-closed" size={22} color="black" style={styles.inputIcon} />
+            <TextInput
+              placeholder="Enter your password"
+              value={password}
+              onChangeText={setPassword}
+              onFocus={() => setFocusedInput('password')}
+              onBlur={() => setFocusedInput('')}
+              placeholderTextColor="black"
+              secureTextEntry={!isPasswordVisible}
+              style={styles.input}
+            />
+            <Pressable onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
+              <Ionicons
+                name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
+                size={22}
+                color="black"
+              />
+            </Pressable>
+          </View>
+
+          <Pressable style={styles.signInButton} onPress={handleSignIn}>
+            <Text style={styles.signInButtonText}>Sign In</Text>
+          </Pressable>
+        </View>
+
+        {/* social login buttons */}
+        <View style={styles.socialButtonsContainer}>
+
+          <Pressable onPress={() => alert("facebook signin")} style={styles.socialButtons}>
+            <FontAwesome6 name="facebook-f" size={24} color="black" />
+          </Pressable>
+
+          <Pressable onPress={() => alert("google signin")} style={styles.socialButtons}>
+            <FontAwesome6 name="google" size={24} color="black" />
+          </Pressable>
+
+          <Pressable onPress={() => alert("instagram signin")} style={styles.socialButtons}>
+            <FontAwesome6 name="instagram" size={24} color="black" />
+          </Pressable>
+        </View>
+
+        {/* Bottom links */}
+        <View style={styles.bottomLinksContainer}>
+
+          <View style={{ width: "100%", flexDirection: "row", justifyContent: "center" }}>
+            <Text>Do not have an account? </Text>
+            <Text style={{ color: "#85CC17" }} onPress={() => Linking.openURL("https://google.com")}>Sign Up</Text>
+          </View>
+
+          <View style={{ width: "100%", flexDirection: "row", justifyContent: "center" }}>
+            <Text style={{ color: "#85CC17" }} onPress={() => Linking.openURL("https://google.com")}>Forgot your password?</Text>
+          </View>
+        </View>
+
+      </View>
+    </SafeAreaView >
+  )
 }
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
-  );
-}
+export default SignInPage;
 
 const styles = StyleSheet.create({
-  container: {
+  inputWrapper: {
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "black",
+    borderRadius: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    marginBottom: 10,
+    padding: 5,
+  },
+  focusedInputWrapper: {
+    borderColor: "#85CC17",
+    borderWidth: 2,
+  },
+  inputIcon: {
+    marginRight: 8,
+  },
+  input: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    paddingVertical: 10,
+    borderColor: "black",
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+  signInButton: {
+    width: "100%",
+    backgroundColor: "#85CC17",
+    borderRadius: 16,
+    paddingVertical: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 8,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+  signInButtonText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "white",
   },
-  title: {
-    textAlign: 'center',
+  socialButtonsContainer: {
+    marginTop: 35,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 12,
   },
-  code: {
-    textTransform: 'uppercase',
+  socialButtons: {
+    width: 52,
+    height: 52,
+    borderWidth: 1,
+    borderColor: "black",
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
-});
+  bottomLinksContainer: {
+    marginTop: 40,
+    width: "100%",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+  }
+})
