@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Linking, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, Linking, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
@@ -18,7 +18,11 @@ const SignInPage = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <View
         style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center', padding: 15 }}>
-        <Ionicons name="home" size={45} color="#85CC17" />
+        <Image
+          source={require("@/assets/images/logo.png")}
+          height={50}
+          width={50}
+        />
 
         <View style={{ marginTop: 20, marginBottom: 24, alignItems: 'center' }}>
           <Text style={{ fontSize: 30, fontWeight: 'bold', marginBottom: 7 }}>Sign In</Text>
